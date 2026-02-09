@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import type { Session } from "@claude-run/api";
 import { PanelLeft, Copy, Check } from "lucide-react";
-import { formatTime } from "./utils";
+import { formatTime, getSessionMetaCache } from "./utils";
 import SessionList from "./components/session-list";
 import SessionView from "./components/session-view";
 import { useEventSource } from "./hooks/use-event-source";
@@ -14,12 +14,14 @@ interface SessionHeaderProps {
 
 function SessionHeader(props: SessionHeaderProps) {
   const { session, copied, onCopyResumeCommand } = props;
+  const meta = getSessionMetaCache();
+  const alias = meta.aliases[session.id] || null;
 
   return (
     <>
       <div className="flex items-center gap-3 min-w-0 flex-1">
         <span className="text-sm text-zinc-300 truncate max-w-xs">
-          {session.display}
+          {alias || session.display}
         </span>
         <span className="text-xs text-zinc-600 shrink-0">
           {session.projectName}
@@ -54,6 +56,7 @@ function App() {
   const [projects, setProjects] = useState<string[]>([]);
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
   const [selectedSession, setSelectedSession] = useState<string | null>(null);
+  const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -126,6 +129,10 @@ function App() {
     setSelectedSession(sessionId);
   }, []);
 
+  const handleSelectGroup = useCallback((group: string | null) => {
+    setSelectedGroup(group);
+  }, []);
+
   return (
     <div className="flex h-screen bg-zinc-950 text-zinc-100">
       {!sidebarCollapsed && (
@@ -154,6 +161,8 @@ function App() {
             sessions={filteredSessions}
             selectedSession={selectedSession}
             onSelectSession={handleSelectSession}
+            selectedGroup={selectedGroup}
+            onSelectGroup={handleSelectGroup}
             loading={loading}
           />
         </aside>

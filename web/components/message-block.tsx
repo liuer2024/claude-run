@@ -60,7 +60,7 @@ const MessageBlock = memo(function MessageBlock(props: MessageBlockProps) {
     if (!content || typeof content === "string") {
       return [];
     }
-    return content.filter((b) => b.type === "text");
+    return content.filter((b) => b.type === "text" || b.type === "image");
   };
 
   const getToolBlocks = (): ContentBlock[] => {
@@ -75,7 +75,7 @@ const MessageBlock = memo(function MessageBlock(props: MessageBlockProps) {
 
   const getVisibleTextBlocks = (): ContentBlock[] => {
     return getTextBlocks().filter(
-      (b) => b.text && sanitizeText(b.text).length > 0
+      (b) => b.type === "image" || (b.text && sanitizeText(b.text).length > 0)
     );
   };
 
@@ -356,6 +356,18 @@ function ContentBlockRenderer(props: ContentBlockRendererProps) {
       );
     }
     return <MarkdownRenderer content={sanitized} />;
+  }
+
+  if (block.type === "image" && block.source) {
+    const src = `data:${block.source.media_type};base64,${block.source.data}`;
+    return (
+      <img
+        src={src}
+        alt="user image"
+        className="max-w-full max-h-96 rounded-lg my-1"
+        loading="lazy"
+      />
+    );
   }
 
   if (block.type === "thinking" && block.thinking) {

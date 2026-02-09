@@ -37,3 +37,42 @@ export function sanitizeText(text: string): string {
   }
   return result.trim();
 }
+
+// --- Session metadata (server-side JSON) ---
+
+export interface SessionMeta {
+  aliases: Record<string, string>;
+  deleted: Record<string, boolean>;
+  groups: Record<string, string>;
+  groupList: string[];
+}
+
+const DEFAULT_META: SessionMeta = { aliases: {}, deleted: {}, groups: {}, groupList: [] };
+
+let metaCache: SessionMeta | null = null;
+
+export async function fetchSessionMeta(): Promise<SessionMeta> {
+  try {
+    const res = await fetch("/api/meta");
+    const data = await res.json();
+    metaCache = { ...DEFAULT_META, ...data };
+    return metaCache;
+  } catch {
+    return metaCache ?? { ...DEFAULT_META };
+  }
+}
+
+export function getSessionMetaCache(): SessionMeta {
+  return metaCache ?? { ...DEFAULT_META };
+}
+
+export async function saveSessionMeta(meta: SessionMeta): Promise<void> {
+  metaCache = meta;
+  try {
+    await fetch("/api/meta", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(meta),
+    });
+  } catch { /* ignore */ }
+}

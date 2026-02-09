@@ -121,7 +121,20 @@ function SessionView(props: SessionViewProps) {
 
   const summary = messages.find((m) => m.type === "summary");
   const conversationMessages = messages.filter(
-    (m) => m.type === "user" || m.type === "assistant"
+    (m) => {
+      if (m.type !== "user" && m.type !== "assistant") return false;
+      // Filter out auto-generated context continuation messages
+      const content = m.message?.content;
+      if (m.type === "user" && content) {
+        const text = typeof content === "string"
+          ? content
+          : content.find((b) => b.type === "text")?.text || "";
+        if (text.startsWith("This session is being continued from a previous conversation")) {
+          return false;
+        }
+      }
+      return true;
+    }
   );
 
   if (loading) {

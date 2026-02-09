@@ -1,4 +1,4 @@
-import { readdir, readFile, stat, open } from "fs/promises";
+import { readdir, readFile, stat, open, writeFile } from "fs/promises";
 import { join, basename } from "path";
 import { homedir } from "os";
 import { createInterface } from "readline";
@@ -33,8 +33,14 @@ export interface ConversationMessage {
   summary?: string;
 }
 
+export interface ImageSource {
+  type: "base64";
+  media_type: string;
+  data: string;
+}
+
 export interface ContentBlock {
-  type: "text" | "thinking" | "tool_use" | "tool_result";
+  type: "text" | "thinking" | "tool_use" | "tool_result" | "image";
   text?: string;
   thinking?: string;
   id?: string;
@@ -43,6 +49,7 @@ export interface ContentBlock {
   tool_use_id?: string;
   content?: string | ContentBlock[];
   is_error?: boolean;
+  source?: ImageSource;
 }
 
 export interface TokenUsage {
@@ -376,4 +383,32 @@ export async function getConversationStream(
       await fileHandle.close();
     }
   }
+}
+
+// --- Session metadata (JSON file) ---
+
+export interface SessionMeta {
+  aliases: Record<string, string>;
+  deleted: Record<string, boolean>;
+  groups: Record<string, string>;
+  groupList: string[];
+}
+
+const DEFAULT_META: SessionMeta = { aliases: {}, deleted: {}, groups: {}, groupList: [] };
+
+function getMetaPath(): string {
+  return join(claudeDir, "claude-run-meta.json");
+}
+
+export async function getSessionMeta(): Promise<SessionMeta> {
+  try {
+    const raw = await readFile(getMetaPath(), "utf-8");
+    return { ...DEFAULT_META, ...JSON.parse(raw) };
+  } catch {
+    return { ...DEFAULT_META };
+  }
+}
+
+export async function saveSessionMeta(meta: SessionMeta): Promise<void> {
+  await writeFile(getMetaPath(), JSON.stringify(meta, null, 2), "utf-8");
 }

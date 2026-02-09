@@ -14,6 +14,8 @@ import {
   getConversationStream,
   invalidateHistoryCache,
   addToFileIndex,
+  getSessionMeta,
+  saveSessionMeta,
 } from "./storage";
 import {
   initWatcher,
@@ -60,7 +62,7 @@ export function createServer(options: ServerOptions) {
       "*",
       cors({
         origin: ["http://localhost:12000"],
-        allowMethods: ["GET", "POST", "OPTIONS"],
+        allowMethods: ["GET", "POST", "PUT", "OPTIONS"],
         allowHeaders: ["Content-Type"],
       }),
     );
@@ -74,6 +76,17 @@ export function createServer(options: ServerOptions) {
   app.get("/api/projects", async (c) => {
     const projects = await getProjects();
     return c.json(projects);
+  });
+
+  app.get("/api/meta", async (c) => {
+    const meta = await getSessionMeta();
+    return c.json(meta);
+  });
+
+  app.put("/api/meta", async (c) => {
+    const meta = await c.req.json();
+    await saveSessionMeta(meta);
+    return c.json({ ok: true });
   });
 
   app.get("/api/sessions/stream", async (c) => {
