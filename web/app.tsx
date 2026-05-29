@@ -4,6 +4,7 @@ import { PanelLeft, Copy, Check } from "lucide-react";
 import { formatTime, getSessionMetaCache } from "./utils";
 import SessionList from "./components/session-list";
 import SessionView from "./components/session-view";
+import ShareDialog from "./components/share-dialog";
 import { useEventSource } from "./hooks/use-event-source";
 
 interface SessionHeaderProps {
@@ -56,6 +57,7 @@ function App() {
   const [projects, setProjects] = useState<string[]>([]);
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
   const [selectedSession, setSelectedSession] = useState<string | null>(null);
+  const [shareSessionId, setShareSessionId] = useState<string | null>(null);
   const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -79,6 +81,14 @@ function App() {
 
     return sessions.find((s) => s.id === selectedSession) || null;
   }, [sessions, selectedSession]);
+
+  const shareSessionData = useMemo(() => {
+    if (!shareSessionId) {
+      return null;
+    }
+
+    return sessions.find((s) => s.id === shareSessionId) || null;
+  }, [sessions, shareSessionId]);
 
   useEffect(() => {
     fetch("/api/projects")
@@ -163,6 +173,7 @@ function App() {
             onSelectSession={handleSelectSession}
             selectedGroup={selectedGroup}
             onSelectGroup={handleSelectGroup}
+            onShareSession={setShareSessionId}
             loading={loading}
           />
         </aside>
@@ -204,6 +215,14 @@ function App() {
           )}
         </div>
       </main>
+
+      {shareSessionData && (
+        <ShareDialog
+          session={shareSessionData}
+          alias={getSessionMetaCache().aliases[shareSessionData.id] || null}
+          onClose={() => setShareSessionId(null)}
+        />
+      )}
     </div>
   );
 }

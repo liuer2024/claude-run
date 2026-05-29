@@ -2,6 +2,7 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import type { ConversationMessage } from "@claude-run/api";
 import MessageBlock from "./message-block";
 import ScrollToBottomButton from "./scroll-to-bottom-button";
+import { filterConversation } from "../utils";
 
 const MAX_RETRIES = 10;
 const BASE_RETRY_DELAY_MS = 1000;
@@ -119,23 +120,7 @@ function SessionView(props: SessionViewProps) {
     setAutoScroll(isAtBottom);
   };
 
-  const summary = messages.find((m) => m.type === "summary");
-  const conversationMessages = messages.filter(
-    (m) => {
-      if (m.type !== "user" && m.type !== "assistant") return false;
-      // Filter out auto-generated context continuation messages
-      const content = m.message?.content;
-      if (m.type === "user" && content) {
-        const text = typeof content === "string"
-          ? content
-          : content.find((b) => b.type === "text")?.text || "";
-        if (text.startsWith("This session is being continued from a previous conversation")) {
-          return false;
-        }
-      }
-      return true;
-    }
-  );
+  const { summary, conversationMessages } = filterConversation(messages);
 
   if (loading) {
     return (
@@ -156,7 +141,7 @@ function SessionView(props: SessionViewProps) {
           {summary && (
             <div className="mb-6 rounded-xl border border-zinc-800/60 bg-zinc-900/50 p-4">
               <h2 className="text-sm font-medium text-zinc-200 leading-relaxed">
-                {summary.summary}
+                {summary}
               </h2>
               <p className="mt-2 text-[11px] text-zinc-500">
                 {conversationMessages.length} messages

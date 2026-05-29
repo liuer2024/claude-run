@@ -1,5 +1,6 @@
 import { useState, useMemo, memo, useRef, useCallback, useEffect } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
+import { Share2 } from "lucide-react";
 import type { Session } from "@claude-run/api";
 import { formatTime, fetchSessionMeta, getSessionMetaCache, saveSessionMeta } from "../utils";
 import type { SessionMeta } from "../utils";
@@ -10,6 +11,7 @@ interface SessionListProps {
   onSelectSession: (sessionId: string) => void;
   selectedGroup: string | null;
   onSelectGroup: (group: string | null) => void;
+  onShareSession: (sessionId: string) => void;
   loading?: boolean;
 }
 
@@ -20,6 +22,7 @@ const SessionList = memo(function SessionList(props: SessionListProps) {
     onSelectSession,
     selectedGroup,
     onSelectGroup,
+    onShareSession,
     loading,
   } = props;
   const [search, setSearch] = useState("");
@@ -332,6 +335,17 @@ const SessionList = memo(function SessionList(props: SessionListProps) {
                       )}
                     </div>
                     <div className="flex items-center gap-1 shrink-0">
+                      {/* share btn */}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onShareSession(session.id);
+                        }}
+                        className="opacity-0 group-hover/item:opacity-100 transition-opacity p-0.5 hover:bg-zinc-700/50 rounded"
+                        title="Share / Export"
+                      >
+                        <Share2 className="w-3 h-3 text-zinc-500" />
+                      </button>
                       {/* group btn */}
                       <button
                         onClick={(e) => startGroupEdit(session.id, e)}

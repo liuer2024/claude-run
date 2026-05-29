@@ -14,8 +14,9 @@
     "dev": "concurrently \"pnpm dev:web\" \"pnpm dev:server\"",
     "dev:server": "tsx watch api/index.ts --dev",
     "dev:web": "vite --config web/vite.config.ts",
-    "build": "pnpm build:server && pnpm build:web",
+    "build": "pnpm build:server && pnpm build:web && pnpm build:share",
     "build:web": "vite build --config web/vite.config.ts",
+    "build:share": "vite build --config web/vite.share.config.ts",
     "build:server": "tsup api/index.ts --format esm --dts --clean",
     "start": "node dist/index.js",
     "prepublishOnly": "pnpm build"
@@ -46,7 +47,8 @@
     "tsup": "^8.3.5",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3",
-    "vite": "^6.0.11"
+    "vite": "^6.0.11",
+    "vite-plugin-singlefile": "^2.3.3"
   },
   "engines": {
     "node": ">=20.0.0"

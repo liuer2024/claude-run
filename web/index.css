@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+/*
+ * Explicitly scan the whole web/ tree for utility classes. Tailwind v4's
+ * automatic content detection keys off the Vite `root`, so the share build
+ * (root: web/share) would otherwise miss classes used in web/components/**.
+ * @source paths resolve relative to this CSS file, so this covers both builds.
+ */
+@source "./**/*.{ts,tsx,html}";
+
 @font-face {
   font-family: "Geist Mono";
   src: url("https://cdn.jsdelivr.net/npm/geist@1.3.1/dist/fonts/geist-mono/GeistMono-Regular.woff2")

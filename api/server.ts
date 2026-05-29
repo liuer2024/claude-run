@@ -42,6 +42,14 @@ function getWebDistPath(): string {
   return join(__dirname, "..", "dist", "web");
 }
 
+function getShareTemplatePath(): string {
+  const prodPath = join(__dirname, "share", "index.html");
+  if (existsSync(prodPath)) {
+    return prodPath;
+  }
+  return join(__dirname, "..", "dist", "share", "index.html");
+}
+
 export interface ServerOptions {
   port: number;
   claudeDir?: string;
@@ -222,6 +230,15 @@ export function createServer(options: ServerOptions) {
         cleanup();
       }
     });
+  });
+
+  app.get("/api/share/template", async (c) => {
+    try {
+      const html = readFileSync(getShareTemplatePath(), "utf-8");
+      return c.html(html);
+    } catch {
+      return c.text("Share template not built. Run 'pnpm build' first.", 404);
+    }
   });
 
   const webDistPath = getWebDistPath();
