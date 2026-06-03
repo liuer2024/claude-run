@@ -1,10 +1,10 @@
 <div align="center">
 
-# Claude Run
+# Claude Run (zkf)
 
-Browse your Claude Code conversation history in a beautiful web UI
+Browse your Claude Code conversation history in a beautiful web UI — with session grouping and one-click sharing.
 
-[![npm version](https://img.shields.io/npm/v/claude-run.svg)](https://www.npmjs.com/package/claude-run)
+[![npm version](https://img.shields.io/npm/v/zkf-claude-run.svg)](https://www.npmjs.com/package/zkf-claude-run)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 <img src=".github/claude-run.gif" alt="Claude Run Demo" width="800" />
@@ -16,13 +16,15 @@ Browse your Claude Code conversation history in a beautiful web UI
 Run the project simply by executing
 
 ```bash
-npx claude-run
+npx zkf-claude-run
 ```
 
 The browser will open automatically at http://localhost:12001.
 
 ## Features
 
+- **Session grouping** - Organize conversations into custom groups (e.g. by system or topic)
+- **One-click sharing** - Export any session to a self-contained single-file HTML
 - **Real-time streaming** - Watch conversations update live as Claude responds
 - **Search** - Find sessions by prompt text or project name
 - **Filter by project** - Focus on specific projects
@@ -36,19 +38,19 @@ The browser will open automatically at http://localhost:12001.
 Install globally via npm:
 
 ```bash
-npm install -g claude-run
+npm install -g zkf-claude-run
 ```
 
 Then run it from any directory:
 
 ```bash
-claude-run
+zkf-claude-run
 ```
 
 The browser will open automatically at http://localhost:12001, showing all your Claude Code conversations.
 
 ```bash
-claude-run [options]
+zkf-claude-run [options]
 
 Options:
   -V, --version        Show version number
