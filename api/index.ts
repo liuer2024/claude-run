@@ -21,7 +21,7 @@ function getVersion(): string {
 }
 
 program
-  .name("claude-run")
+  .name("zkf-claude-run")
   .description(
     "A beautiful web UI for browsing Claude Code conversation history"
   )

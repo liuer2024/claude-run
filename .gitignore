@@ -33,3 +33,6 @@ npm-debug.log*
 package-lock.json
 yarn.lock
 bun.lockb
+
+# Claude Code 本地配置（含个人路径/会话别名，不应提交）
+.claude/settings.local.json
