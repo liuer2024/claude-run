@@ -1,6 +1,6 @@
 {
   "name": "zkf-claude-run",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "description": "A beautiful web UI for browsing Claude Code conversation history (with grouping & session sharing)",
   "type": "module",
   "bin": {
