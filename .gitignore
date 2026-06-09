@@ -36,3 +36,8 @@ bun.lockb
 
 # Claude Code 本地配置（含个人路径/会话别名，不应提交）
 .claude/settings.local.json
+
+# 本地调试/设计草稿（含真实项目名、会话片段、个人路径，不应提交）
+.playwright-mcp/
+tower-md-rendered.png
+docs/
