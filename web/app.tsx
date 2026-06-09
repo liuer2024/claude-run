@@ -1,10 +1,11 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo } from "react";
 import type { Session } from "@claude-run/api";
 import { PanelLeft, Copy, Check } from "lucide-react";
 import { formatTime, getSessionMetaCache } from "./utils";
-import SessionList from "./components/session-list";
+import Sidebar from "./components/sidebar";
 import SessionView from "./components/session-view";
 import ShareDialog from "./components/share-dialog";
+import ThemeSwitcher from "./components/theme-switcher";
 import { useEventSource } from "./hooks/use-event-source";
 
 interface SessionHeaderProps {
@@ -54,7 +55,6 @@ function SessionHeader(props: SessionHeaderProps) {
 
 function App() {
   const [sessions, setSessions] = useState<Session[]>([]);
-  const [projects, setProjects] = useState<string[]>([]);
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
   const [selectedSession, setSelectedSession] = useState<string | null>(null);
   const [shareSessionId, setShareSessionId] = useState<string | null>(null);
@@ -90,13 +90,6 @@ function App() {
     return sessions.find((s) => s.id === shareSessionId) || null;
   }, [sessions, shareSessionId]);
 
-  useEffect(() => {
-    fetch("/api/projects")
-      .then((res) => res.json())
-      .then(setProjects)
-      .catch(console.error);
-  }, []);
-
   const handleSessionsFull = useCallback((event: MessageEvent) => {
     const data: Session[] = JSON.parse(event.data);
     setSessions(data);
@@ -128,13 +121,6 @@ function App() {
     onError: handleSessionsError,
   });
 
-  const filteredSessions = useMemo(() => {
-    if (!selectedProject) {
-      return sessions;
-    }
-    return sessions.filter((s) => s.project === selectedProject);
-  }, [sessions, selectedProject]);
-
   const handleSelectSession = useCallback((sessionId: string) => {
     setSelectedSession(sessionId);
   }, []);
@@ -147,28 +133,10 @@ function App() {
     <div className="flex h-screen bg-zinc-950 text-zinc-100">
       {!sidebarCollapsed && (
         <aside className="w-80 border-r border-zinc-800/60 flex flex-col bg-zinc-950">
-          <div className="border-b border-zinc-800/60">
-            <label htmlFor={"select-project"} className="block w-full px-1">
-              <select
-                id={"select-project"}
-                value={selectedProject || ""}
-                onChange={(e) => setSelectedProject(e.target.value || null)}
-                className="w-full h-[50px] bg-transparent text-zinc-300 text-sm focus:outline-none cursor-pointer px-5 py-4"
-              >
-                <option value="">All Projects</option>
-                {projects.map((project) => {
-                  const name = project.split("/").pop() || project;
-                  return (
-                    <option key={project} value={project}>
-                      {name}
-                    </option>
-                  );
-                })}
-              </select>
-            </label>
-          </div>
-          <SessionList
-            sessions={filteredSessions}
+          <Sidebar
+            sessions={sessions}
+            selectedProject={selectedProject}
+            onSelectProject={setSelectedProject}
             selectedSession={selectedSession}
             onSelectSession={handleSelectSession}
             selectedGroup={selectedGroup}
@@ -197,6 +165,7 @@ function App() {
               onCopyResumeCommand={handleCopyResumeCommand}
             />
           )}
+          <ThemeSwitcher />
         </div>
         <div className="flex-1 overflow-hidden">
           {selectedSession ? (

@@ -35,19 +35,21 @@
   font-display: swap;
 }
 
-:root {
+/* default theme = terminal (uses Tailwind's default palette) */
+:root,
+:root[data-theme="terminal"] {
   color-scheme: dark;
 }
 
 body {
   font-family: "Geist Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo,
     Consolas, monospace;
-  background: #09090b;
+  background: var(--color-zinc-950);
 }
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: #27272a transparent;
+  scrollbar-color: var(--color-zinc-800) transparent;
 }
 
 ::-webkit-scrollbar {
@@ -60,16 +62,16 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #27272a;
+  background: var(--color-zinc-800);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #3f3f46;
+  background: var(--color-zinc-700);
 }
 
 pre {
-  background: #18181b;
+  background: var(--color-zinc-900);
   border-radius: 8px;
   padding: 12px;
   overflow-x: auto;
@@ -82,6 +84,94 @@ code {
 }
 
 select option {
-  background: #18181b;
-  color: #e4e4e7;
+  background: var(--color-zinc-900);
+  color: var(--color-zinc-200);
+}
+
+/* ============================================================
+   THEME SYSTEM
+   Each theme overrides the Tailwind color CSS variables it needs.
+   Because v4 utilities compile to `var(--color-<name>)`, remapping
+   these variables re-skins the entire app with zero component edits.
+
+   Role map used across the app:
+     zinc 950→50 ........ neutral ramp: background → text
+     cyan ............... primary accent (selected session, focus)
+     violet ............. group accent (group tags / filters)
+   Light themes also flip `color-scheme` so native widgets adapt.
+   ============================================================ */
+
+/* ---------- Archive · warm paper / ink (light) ---------- */
+:root[data-theme="archive"] {
+  color-scheme: light;
+  --color-zinc-950: #f4efe6;
+  --color-zinc-900: #ece4d6;
+  --color-zinc-800: #ddd0bb;
+  --color-zinc-700: #c4b39a;
+  --color-zinc-600: #9a8d7b;
+  --color-zinc-500: #7c6f5e;
+  --color-zinc-400: #675b4c;
+  --color-zinc-300: #473f34;
+  --color-zinc-200: #362e24;
+  --color-zinc-100: #2b2620;
+  --color-zinc-50:  #201b15;
+  --color-cyan-700: #732817;
+  --color-cyan-600: #86301d;
+  --color-cyan-500: #9a3722;
+  --color-cyan-400: #b1432a;
+  --color-cyan-300: #c4633f;
+  --color-violet-600: #6a5322;
+  --color-violet-500: #7e6228;
+  --color-violet-400: #94732f;
+  --color-violet-300: #b08a3c;
+}
+
+/* ---------- Blueprint · drafting blue (dark) ---------- */
+:root[data-theme="blueprint"] {
+  color-scheme: dark;
+  --color-zinc-950: #0a1a2b;
+  --color-zinc-900: #0d2138;
+  --color-zinc-800: #15324c;
+  --color-zinc-700: #274a66;
+  --color-zinc-600: #3a5d75;
+  --color-zinc-500: #5f8198;
+  --color-zinc-400: #7fa6bd;
+  --color-zinc-300: #a9c6d8;
+  --color-zinc-200: #c8dde8;
+  --color-zinc-100: #dbeaf2;
+  --color-zinc-50:  #eef5f9;
+  --color-cyan-700: #178f80;
+  --color-cyan-600: #1fb3a0;
+  --color-cyan-500: #34d3bd;
+  --color-cyan-400: #5eead4;
+  --color-cyan-300: #7df3e0;
+  --color-violet-600: #d18e08;
+  --color-violet-500: #f0a90f;
+  --color-violet-400: #fbbf24;
+  --color-violet-300: #fcd34d;
+}
+
+/* ---------- Swiss · high-contrast neutral + red (light) ---------- */
+:root[data-theme="swiss"] {
+  color-scheme: light;
+  --color-zinc-950: #ffffff;
+  --color-zinc-900: #f4f4f2;
+  --color-zinc-800: #e2e2de;
+  --color-zinc-700: #cfcfca;
+  --color-zinc-600: #9a9a95;
+  --color-zinc-500: #6e6e6a;
+  --color-zinc-400: #525250;
+  --color-zinc-300: #2e2e2c;
+  --color-zinc-200: #1c1c1b;
+  --color-zinc-100: #111111;
+  --color-zinc-50:  #000000;
+  --color-cyan-700: #99001d;
+  --color-cyan-600: #b00022;
+  --color-cyan-500: #cc0028;
+  --color-cyan-400: #e8002d;
+  --color-cyan-300: #ff3355;
+  --color-violet-600: #111111;
+  --color-violet-500: #222222;
+  --color-violet-400: #3a3a3a;
+  --color-violet-300: #555555;
 }

@@ -18,6 +18,7 @@ import {
   Database,
   HardDrive,
   Bot,
+  User,
 } from "lucide-react";
 import { sanitizeText } from "../utils";
 import { MarkdownRenderer } from "./markdown-renderer";
@@ -111,10 +112,27 @@ const MessageBlock = memo(function MessageBlock(props: MessageBlockProps) {
     <div className={`flex ${isUser ? "justify-end" : "justify-start"} min-w-0`}>
       <div className="max-w-[85%] min-w-0">
         <div
+          className={`flex items-center gap-1.5 mb-1 px-1 text-[10px] font-medium ${
+            isUser ? "justify-end text-indigo-400" : "justify-start text-cyan-500"
+          }`}
+        >
+          {isUser ? (
+            <>
+              <span>你</span>
+              <User className="w-3 h-3" />
+            </>
+          ) : (
+            <>
+              <Bot className="w-3 h-3" />
+              <span>Claude</span>
+            </>
+          )}
+        </div>
+        <div
           className={`px-3.5 py-2.5 rounded-2xl overflow-hidden ${
             isUser
               ? "bg-indigo-600/80 text-indigo-50 rounded-br-md"
-              : "bg-cyan-700/50 text-zinc-100 rounded-bl-md"
+              : "bg-zinc-900 text-zinc-100 border border-zinc-800/80 rounded-bl-md"
           }`}
         >
           {typeof content === "string" ? (
